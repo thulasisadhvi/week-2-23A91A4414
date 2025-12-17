@@ -57,7 +57,12 @@ def load_private_key(path: str = PRIVATE_KEY_PATH):
 def decrypt_seed_b64(encrypted_seed_b64: str, private_key) -> str:
     # 1) base64 decode
     try:
-        ciphertext = base64.b64decode(encrypted_seed_b64)
+        b64 = encrypted_seed_b64.strip().replace("\n", "")
+        missing_padding = len(b64) % 4
+        if missing_padding:
+            b64 += "=" * (4 - missing_padding)
+        ciphertext = base64.b64decode(b64)
+        
     except Exception as e:
         raise ValueError(f"Base64 decode failed: {e}")
 
