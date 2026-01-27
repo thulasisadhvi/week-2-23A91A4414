@@ -1,146 +1,84 @@
-RSA & TOTP Microservice
+# RSA Seed Decryption Project 
 
-This project implements a secure Node.js microservice that handles RSA decryption, TOTP (2FA) generation, and verification. It is containerized using Docker and includes a background Cron job for audit logging.
+This repository contains a secure implementation for requesting and decrypting a cryptographic seed from a remote instructor API using **RSA-OAEP (SHA-256)**.
 
-🚀 Features
+##  Features
+- **Key Generation:** Supports 2048-bit RSA key pairs.
+- **API Integration:** Automated POST requests to fetch encrypted payloads.
+- **Cross-Platform Support:** Includes both **Node.js** and **Python** implementations for decryption.
+- **Secure Handling:** Proper use of OAEP padding and MGF1 masking to ensure high security.
 
-Secure Key Management: Uses RSA-4096 keys for identity verification.
+---
 
-Seed Decryption: Decrypts instructor-provided seeds using RSA-OAEP-SHA256.
+##  Tech Stack
+- **Node.js:** Using the native `crypto` module.
+- **Python 3.x:** Using the `cryptography` and `requests` libraries.
+- **Git:** For version control and submission.
 
-2FA Generation: Generates valid TOTP codes (SHA-1, 30s period).
+---
 
-Verification API: Validates user-submitted codes with time-window tolerance.
+## 📂 Project Structure
+```text
+├── data/
+│   └── seed.txt            # The final decrypted 64-character hex seed
+├── decrypt_seed.js         # Node.js decryption logic
+├── decrypt_seed.py         # Python decryption logic
+├── request_seed.js         # Script to fetch encrypted_seed.txt
+├── student_public.pem      # Your Public Key (Shared with API)
+└── README.md
 
-Dockerized: Runs in a secure, isolated Alpine Linux container.
+```
 
-Background Worker: A Cron job logs the generated 2FA code every minute.
+---
 
-🛠️ Prerequisites
+## ⚙️ Setup & Usage
 
-Docker Desktop (Running)
+### 1. Installation
 
-Node.js (v18+)
+If using Node.js, install dependencies (if any):
 
-Git
-
-📦 Installation & Setup
-
-1. Clone & Initialize
-
-git clone [https://github.com/sai1432-ss/24A95A4405-SOLUTION](https://github.com/sai1432-ss/24A95A4405-SOLUTION)
-cd 24A95A4405-SOLUTION
+```bash
 npm install
 
+```
 
-2. Generate Keys & Get Seed
+If using Python, install the required library:
 
-We have automated the setup process. Run this master script to generate keys, fetch the encrypted seed from the Instructor API, and prepare the environment:
+```bash
+pip install cryptography requests
 
-node master_setup.js
+```
 
+### 2. Request the Seed
 
-Generates student_private.pem & student_public.pem
+Run the request script to get the `encrypted_seed.txt` from the API:
 
-Fetches encrypted_seed.txt
+```bash
+node request_seed.js
 
-🐳 Docker Deployment
+```
 
-1. Build the Image
+### 3. Decrypt the Seed
 
-Build the Docker image with your username tag:
+Decrypt the received file using your private key:
 
-docker build -t saisatish24/rsa-totp-service:latest .
+```bash
+node decrypt_seed.js
 
+```
 
-2. Run the Container
+The result will be saved in `data/seed.txt`.
 
-Start the service in the background. This mounts the local ./data and ./cron folders so you can inspect the output.
+---
 
-docker-compose up -d --build
+## Security Note
 
+The **`student_private.pem`** and **`encrypted_seed.txt`** files are ignored by Git via `.gitignore` to prevent the leakage of sensitive credentials.
 
-3. Verify Running Status
+---
 
-docker ps
+**Author:** Thulsi Sadhvi
 
+**Student ID:** 23A91A4414
 
-Status should be Up and healthy.
-
-🔌 API Endpoints
-
-The service runs on http://localhost:8080.
-
-1. Decrypt Seed
-
-POST /decrypt-seed
-
-Body: { "encrypted_seed": "BASE64_STRING..." }
-
-Effect: Decrypts the seed and saves it to /data/seed.txt inside the container.
-
-2. Generate 2FA Code
-
-GET /generate-2fa
-
-Response: { "code": "123456", "valid_for": 28 }
-
-3. Verify 2FA Code
-
-POST /verify-2fa
-
-Body: { "code": "123456" }
-
-Response: { "valid": true }
-
-✅ Testing & Verification
-
-We have provided a comprehensive test suite.
-
-Run Automated Tests
-
-This script acts as a client, sending requests to your Docker container to verify all endpoints work correctly.
-
-node master.js
-
-
-Verify Cron Job
-
-The background task runs every minute. Check the logs generated inside the Docker volume:
-
-# Check the log file inside the container
-docker exec rsa-totp-service cat /cron/last_code.txt
-
-
-Expected Output: 2024-12-04 12:00:00 - 2FA Code: 123456
-
-📝 Submission Generation
-
-To generate the required Cryptographic Proof of Work for Step 13:
-
-Commit all your final code:
-
-git add .
-git commit -m "Final Submission"
-
-
-Run the proof generator:
-
-node generate_proof.js
-
-
-Copy the Output: Paste the resulting Base64 string into the submission form.
-
-📂 Project Structure
-
-index.js: Main Express API server.
-
-totp_generation.js & totp_verification.js: Core logic modules.
-
-cron_task.js: Script executed by the cron daemon.
-
-start.sh: Entrypoint script for Docker.
-
-Dockerfile: Multi-stage build configuration.
-
-docker-compose.yml: Orchestration config. 
+```
