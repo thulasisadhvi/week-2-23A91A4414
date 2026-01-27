@@ -1,0 +1,36 @@
+services:
+  app:
+    # Build configuration
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Container name (optional but helpful)
+    container_name: rsa-totp-service
+
+    # Port mapping
+    ports:
+      - "8080:8080"
+
+    # Volume mounts
+    volumes:
+      # Named volumes for persistence (Requirements)
+      - seed-data:/data
+      - cron-output:/cron
+      
+      # Mount key files for local development (updates without rebuilding)
+      - ./student_private.pem:/usr/src/app/student_private.pem:ro
+      - ./student_public.pem:/usr/src/app/student_public.pem:ro
+      - ./instructor_public.pem:/usr/src/app/instructor_public.pem:ro
+
+    # Environment variables
+    environment:
+      - TZ=UTC
+
+    # Restart policy
+    restart: unless-stopped
+
+# Define the named volumes
+volumes:
+  seed-data:
+  cron-output:

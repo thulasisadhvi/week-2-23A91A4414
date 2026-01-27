@@ -1,0 +1,15 @@
+--- 1. SENSITIVE FILES (DO NOT COMMIT) ---
+
+encrypted_seed.txt
+data/seed.txt
+
+--- 2. DEPENDENCIES ---
+
+node_modules/
+
+--- 3. IDE & SYSTEM FILES ---
+
+.vscode/
+.idea/
+.DS_Store
+*.log

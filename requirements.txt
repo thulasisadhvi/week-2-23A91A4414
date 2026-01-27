@@ -1,0 +1,14 @@
+{
+  "name": "rsa-totp-solution",
+  "version": "1.0.0",
+  "description": "RSA Decryption and TOTP Microservice",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "hi-base32": "^0.5.1",
+    "otplib": "^12.0.1"
+  }
+}

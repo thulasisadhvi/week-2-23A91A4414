@@ -1,0 +1,1 @@
+* * * * * cd /usr/src/app && node cron_task.js >> /cron/last_code.txt 2>&1
